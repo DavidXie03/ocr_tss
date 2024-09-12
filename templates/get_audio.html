@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史音频</title>
+    <style>
+        .audioGallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        audio {
+            max-width: 45%;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>音频播放器</h1>
+    <div id="audioGallery" class="audioGallery"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function addAudioPlayer(audioUrl) {
+                const audioId = `audio-${Math.random().toString(36).substr(2, 9)}`;
+                const audioPlayer = document.createElement('audio');
+                audioPlayer.id = audioId;
+                audioPlayer.setAttribute('controls', '');
+                audioPlayer.src = audioUrl;
+
+                const playButton = document.createElement('button');
+                playButton.textContent = '播放音频';
+
+                playButton.addEventListener('click', function() {
+                    document.getElementById(audioId).toggleAttribute('hidden');
+                    document.getElementById(audioId).play();
+                });
+
+                document.getElementById('audioGallery').appendChild(playButton);
+                document.getElementById('audioGallery').appendChild(audioPlayer);
+            }
+
+            // 假设 audioUrls 是从后端获取的音频文件路径数组
+            const audioUrls = {{ audio_urls | tojson }};
+
+            audioUrls.forEach(audioUrl => {
+                addAudioPlayer(audioUrl);
+            });
+        });
+    </script>
+</body>
+</html>

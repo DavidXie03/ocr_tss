@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史图像</title>
+    <style>
+        imageGallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        img {
+            max-width: 45%;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>历史图像</h1>
+    <div id="imageGallery">
+        {% for image_url in image_urls %}
+            <img src="{{ image_url }}" alt="Image">
+        {% endfor %}
+    </div>
+</body>
+</html>

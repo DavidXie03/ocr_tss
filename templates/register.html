@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册界面</title>
+</head>
+<body>
+    <h2>注册</h2>
+    <form id="registerForm" action="/register" method="POST">
+        <label for="regUsername">用户名:</label><br>
+        <input type="text" id="regUsername" name="regUsername" required><br>
+        <label for="regPassword">密码:</label><br>
+        <input type="password" id="regPassword" name="regPassword" required><br>
+        <input type="submit" value="注册">
+    </form>
+    <script>
+        document.getElementById('registerForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const regUsername = document.getElementById('regUsername').value;
+            const regPassword = document.getElementById('regPassword').value;
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: regUsername, password: regPassword })
+                });
+
+                if (response.ok) {
+                    alert('注册成功！');
+                    location.href = '/login';
+                } else {
+                    alert('该用户名已被注册，请尝试其他用户名！');
+                }
+            } catch (error) {
+                console.error('Error during registration:', error);
+            }
+        };
+    </script>
+</body>
+</html>

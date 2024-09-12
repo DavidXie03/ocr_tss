@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+</head>
+<body>
+    <h2>登录</h2>
+    <form id="loginForm" action="/login" method="POST">
+        <label for="username">用户名:</label><br>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">密码:</label><br>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="登录">
+    </form>
+    <script>
+        document.getElementById('loginForm').onsubmit = async function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    location.href = '/upload';
+                } else {
+                    alert('登录失败，请检查您的用户名和密码！');
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+            }
+        };
+    </script>
+</body>
+</html>

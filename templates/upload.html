@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>OCR_TSS</title>
+</head>
+<body>
+    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" value="提交"/>
+    </form>
+
+    <button id="viewImagesBtn"><a href="/get_images">查看历史图像</a></button>
+    <button id="viewAudiosBtn"><a href="/get_audios">查看历史音频</a></button>
+
+    <div id="audioGallery" style="margin-top: 20px;">
+        <!-- 音频将在这里显示 -->
+    </div>
+
+    <img id="uploadedImage" style="display:none; max-width: 500px; margin-top: 20px;" />
+    <audio id="audioPlayer" controls style="display:none; margin-top: 20px;"></audio>
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+
+                // 显示上传的图片
+                const imageUrl = result.image_url;
+                const uploadedImage = document.getElementById('uploadedImage');
+                uploadedImage.src = imageUrl;
+                uploadedImage.style.display = 'block';
+
+                // 播放生成的音频
+                const audioUrl = result.audio_url;
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = audioUrl;
+                audioPlayer.style.display = 'block';
+                audioPlayer.play();
+            } else {
+                alert('文件上传失败');
+            }
+        };
+    </script>
+</body>
+</html>
