@@ -15,19 +15,19 @@ pip install torch torchvision flask easyocr pyttsx3
 ### 数据库user_message创建
 ```shell
 CREATE TABLE user (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     account VARCHAR(50) NOT NULL UNIQUE,
     passowrd VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE images (
-	user_id INT NOT NULL,
+    user_id INT NOT NULL,
     imagepath VARCHAR(255) NOT NULL,
     upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE audios (
-	user_id INT NOT NULL,
+    user_id INT NOT NULL,
     audiopath VARCHAR(255) NOT NULL,
     upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
