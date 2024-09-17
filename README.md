@@ -13,6 +13,7 @@ pip install torch torchvision flask easyocr pyttsx3
 ```
 
 ### 数据库user_message创建
+```shell
 CREATE TABLE user (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     account VARCHAR(50) NOT NULL UNIQUE,
@@ -30,6 +31,7 @@ CREATE TABLE audios (
     audiopath VARCHAR(255) NOT NULL,
     upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+```
 
 ### 运行方式
 网页端：运行`main.py`后访问 http://127.0.0.1:5000/upload ，上传文件后即可得到语音播报结果（待进一步完善）。"# software" 
