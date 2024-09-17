@@ -85,20 +85,20 @@ if __name__ == '__main__':
     uploader = app.Uploader()
 
     # 注册账户
-    #account = input("请输入账号：")
-    #password = input("请输入密码：")
-    #if user_manager.register(account, password):
+    # account = input("请输入账号：")
+    # password = input("请输入密码：")
+    # if user_manager.register(account, password):
     #    print("注册成功！")
-    #else:
+    # else:
     #    print("注册失败，请尝试其他账号。")
 
     # 登录账户
     account = input("请输入账号: ")
     password = input("请输入密码: ")
-    #user_id = user_manager.get_user_id(account, password)
-    #if user_id:
+    # user_id = user_manager.get_user_id(account, password)
+    # if user_id:
     #    print("登录成功！")
-    #else:
+    # else:
     #    print("登录失败，请检查您的账号和密码。")
 
     user_manager.store(uploader)

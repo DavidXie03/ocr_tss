@@ -9,15 +9,15 @@
 
 ### 环境配置
 ```shell
-pip install torch torchvision flask easyocr pyttsx3
+pip install torch torchvision flask easyocr pyttsx3 pymysql
 ```
 
 ### 数据库user_message创建
-```shell
+```
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     account VARCHAR(50) NOT NULL UNIQUE,
-    passowrd VARCHAR(50) NOT NULL
+    password VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE images (

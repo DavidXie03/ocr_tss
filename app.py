@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, jsonify, send_from_directory
+from flask import Flask, render_template, request, url_for, jsonify, send_from_directory, redirect
 import pyttsx3
 import easyocr
 import uuid
@@ -6,8 +6,6 @@ import os
 import pymysql
 from contextlib import closing
 import database
-import re
-import requests
 
 
 class Uploader:
@@ -17,18 +15,22 @@ class Uploader:
         self.engine = pyttsx3.init()
         self.UPLOAD_FOLDER = upload_folder
         self.AUDIO_FOLDER = audio_folder
-        #self.file_received = False
+        # self.file_received = False
         self._setup_routes()
         self.user = database.User()
         self.id = 0
 
-    def Model(self):
-        return self.UPLOAD_FOLDER
-
     def _setup_routes(self):
-        @self.app.route('/first')
+        @self.app.route('/index')
         def first_page():
             return render_template('first.html')
+
+        @self.app.route('/')
+        def redirect_to_index():
+            """
+            当访问根 URL '/' 时，自动重定向到 '/index'
+            """
+            return redirect(url_for('first_page'))
 
         @self.app.route('/login', methods=['GET', 'POST'])
         def login():
@@ -83,7 +85,6 @@ class Uploader:
                 with closing(connection) as connection:
                     with closing(connection.cursor()) as cursor:
                         if self.id != 0:
-
                             # 保存上传的图片
                             unique_id = str(uuid.uuid4())
                             pic_file_name = unique_id + ".png"
@@ -164,5 +165,4 @@ class Uploader:
 # 使用示例
 if __name__ == '__main__':
     uploader = Uploader()
-
     uploader.run(debug=True)
