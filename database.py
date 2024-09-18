@@ -58,7 +58,10 @@ class User:
                     cursor.execute(sql_insert, (account, password))
                     connection.commit()
                     # print("账号注册成功！")
-                    return True
+                    select = "SELECT id FROM user WHERE account = %s"
+                    cursor.execute(select, account)
+                    result = cursor.fetchone()
+                    return result[0]
 
     def login(self, account, password):
         """验证用户登录"""

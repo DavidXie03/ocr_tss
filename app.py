@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, url_for, jsonify, send_from_directory, redirect
+# from flask_restful import Api
 import pyttsx3
 import easyocr
 import uuid
@@ -32,49 +33,63 @@ class Uploader:
             """
             return redirect(url_for('first_page'))
 
-        @self.app.route('/login', methods=['GET', 'POST'])
+        @self.app.route('/user/login', methods=['GET', 'POST'])
         def login():
             if request.method == 'GET':
                 return render_template('login.html')
             elif request.method == 'POST':
 
                 data = request.get_json()
-                account = data['username']
+                account = data['userName']
                 password = data['password']
 
                 try:
                     self.id = self.user.login(account, password)
 
                     if self.id != 0:
-                        return jsonify({'message': 'Login successful'}), 200
+                        response = {
+                            "errorCode": 0,
+                            "data": {
+                                "uid": str(self.id),
+                                "userName": account,
+                            }
+                        }
+                        return jsonify(response)
                     else:
-                        return jsonify({'message': 'Invalid credentials'}), 401
+                        return jsonify({"errorCode": 401, "message": "Invalid credentials"})
 
                 except Exception as e:
                     print(f"Error during login: {e}")
-                    return jsonify({'message': 'An error occurred'}), 500
+                    return jsonify({"errorCode": 500, 'message': 'An error occurred'})
 
-        @self.app.route('/register', methods=['GET', 'POST'])
+        @self.app.route('/user/register', methods=['GET', 'POST'])
         def register():
             if request.method == 'GET':
                 return render_template('register.html')
             elif request.method == 'POST':
                 data = request.get_json()
-                account = data['username']
+                account = data['userName']
                 password = data['password']
 
                 try:
-                    flag = self.user.register(account, password)
+                    user_id = self.user.register(account, password)
 
-                    if flag:
-                        return jsonify({'message': 'Registration successful'}), 201
+                    if user_id != 0:
+                        response = {
+                            "errorCode": 0,
+                            "data": {
+                                "uid": str(user_id),
+                                "userName": account
+                            }
+                        }
+                        return jsonify(response)
                     else:
-                        return jsonify({'message': 'Account already exists'}), 409
+                        return jsonify({"errorCode": 409, 'message': 'Account already exists'})
 
                 except Exception as e:
                     print(f"Error during registration: {e}")
                     self.user.connect().rollback()
-                    return jsonify({'message': 'An error occurred'}), 500
+                    return jsonify({"errorCode": 500, 'message': 'An error occurred'})
 
         @self.app.route('/upload', methods=['GET', 'POST'])
         def upload_file():

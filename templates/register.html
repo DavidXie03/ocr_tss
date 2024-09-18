@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>注册</h2>
-    <form id="registerForm" action="/register" method="POST">
+    <form id="registerForm" action="/user/register" method="POST">
         <label for="regUsername">用户名:</label><br>
         <input type="text" id="regUsername" name="regUsername" required><br>
         <label for="regPassword">密码:</label><br>
@@ -20,17 +20,18 @@
             const regPassword = document.getElementById('regPassword').value;
 
             try {
-                const response = await fetch('/register', {
+                const response = await fetch('/user/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: regUsername, password: regPassword })
+                    body: JSON.stringify({ userName: regUsername, password: regPassword })
                 });
 
-                if (response.ok) {
+                const result = await response.json();
+                if (result.errorCode === 0) {
                     alert('注册成功！');
-                    location.href = '/login';
+                    location.href = '/user/login';
                 } else {
-                    alert('该用户名已被注册，请尝试其他用户名！');
+                    alert(result.message || '该用户名已被注册，请尝试其他用户名！');
                 }
             } catch (error) {
                 console.error('Error during registration:', error);
