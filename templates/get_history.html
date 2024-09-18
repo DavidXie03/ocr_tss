@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>历史信息</title>
+    <style>
+        .galleryWrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .galleryItem {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 22%; /* 考虑到gap的存在，这里设置为22%，使得四列布局 */
+            box-sizing: border-box;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        audio {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>历史图像与音频</h1>
+    <div id="galleryWrapper" class="galleryWrapper"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function addMediaElements(imageUrl, audioUrl) {
+                const itemContainer = document.createElement('div');
+                itemContainer.className = 'galleryItem';
+
+                const imgElement = document.createElement('img');
+                imgElement.src = imageUrl;
+                imgElement.alt = 'Image';
+                imgElement.style.maxWidth = '100%';
+
+                const audioElement = document.createElement('audio');
+                audioElement.setAttribute('controls', '');
+                audioElement.src = audioUrl;
+
+                itemContainer.appendChild(imgElement);
+                itemContainer.appendChild(audioElement);
+
+                document.getElementById('galleryWrapper').appendChild(itemContainer);
+            }
+
+            const image_urls = {{ image_urls | tojson }};
+            const audio_urls = {{ audio_urls | tojson }};
+
+            if (image_urls.length === audio_urls.length) {
+                for (let i = 0; i < image_urls.length; i++) {
+                    addMediaElements(image_urls[i], audio_urls[i]);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

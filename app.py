@@ -6,6 +6,9 @@ import uuid
 import os
 import pymysql
 from contextlib import closing
+
+from shapely import length
+
 import database
 
 
@@ -20,6 +23,7 @@ class Uploader:
         self._setup_routes()
         self.user = database.User()
         self.id = 0
+        self.offset = 0
 
     def _setup_routes(self):
         @self.app.route('/index')
@@ -168,6 +172,40 @@ class Uploader:
         @self.app.route('/audio/<path:filename>')
         def get_audio(filename):
             return send_from_directory('static/audio', filename)
+
+        @self.app.route('/picture/history')
+        def get_history():
+            connection = self.user.connect()
+            sql_1 = "SELECT imagepath FROM images WHERE user_id = %s"
+            sql_2 = "SELECT audiopath FROM audios WHERE user_id = %s"
+            with closing(connection) as connection:
+                with closing(connection.cursor()) as cursor:
+                    cursor.execute(sql_1, self.id)
+                    images = cursor.fetchall()
+                    images = [','.join(item) for item in images]
+                    images = [item.replace(',', '') for item in images]
+                    images = [item.replace('(', '') for item in images]
+                    image_urls = [item.replace(')', '') for item in images]
+
+                    cursor.execute(sql_2, self.id)
+                    audios = cursor.fetchall()
+                    audios = [','.join(item) for item in audios]
+                    audios = [item.replace(',', '') for item in audios]
+                    audios = [item.replace('(', '') for item in audios]
+                    audio_urls = [item.replace(')', '') for item in audios]
+            items = []
+            num1 = len(image_urls)
+            num2 = len(audio_urls)
+            if num1 == num2:
+                for i in range(num1):
+                    imerge = {
+                        "imageUrl": image_urls[i],
+                        "audioUrl": audio_urls[i]
+                    }
+                    items[i] = imerge
+                print(items)
+            else:
+                print("length error")
 
     def run(self, debug=True):
         if not os.path.exists(self.UPLOAD_FOLDER):
