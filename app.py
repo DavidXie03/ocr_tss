@@ -137,18 +137,18 @@ class Uploader:
             sql_1 = "SELECT imagepath FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
             sql_2 = "SELECT audiopath FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
             uid = request.args.get('uid')
-            pictureNum = int(request.args.get('pictureNum'))
+            picturesNum = int(request.args.get('picturesNum'))
             index = int(request.args.get('index'))
             with closing(connection) as connection:
                 with closing(connection.cursor()) as cursor:
-                    cursor.execute(sql_1, (uid, pictureNum, index))
+                    cursor.execute(sql_1, (uid, picturesNum, index))
                     images = cursor.fetchall()
                     images = [','.join(item) for item in images]
                     images = [item.replace(',', '') for item in images]
                     images = [item.replace('(', '') for item in images]
                     image_urls = [item.replace(')', '') for item in images]
 
-                    cursor.execute(sql_2, (uid, pictureNum, index))
+                    cursor.execute(sql_2, (uid, picturesNum, index))
                     audios = cursor.fetchall()
                     audios = [','.join(item) for item in audios]
                     audios = [item.replace(',', '') for item in audios]
@@ -165,7 +165,7 @@ class Uploader:
                 response = {
                     "errorCode": 0,
                     "data": {
-                        "pictureNum": num1,
+                        "picturesNum": num1,
                         "items": items
                     }
                 }

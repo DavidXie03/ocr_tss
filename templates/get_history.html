@@ -43,12 +43,12 @@
             // 解析URL中的查询参数
             const urlParams = new URLSearchParams(window.location.search);
             const uid = urlParams.get('uid');
-            const pictureNum = urlParams.get('pictureNum');
+            const picturesNum = urlParams.get('picturesNum');
             const index = urlParams.get('index');
 
-            if (uid && pictureNum && index) {
+            if (uid && picturesNum && index) {
                 // 发起请求
-                fetch(`/picture/history?uid=${uid}&pictureNum=${pictureNum}&index=${index}`, {
+                fetch(`/picture/history?uid=${uid}&picturesNum=${picturesNum}&index=${index}`, {
                     method: 'GET'
                 })
                 .then(response => response.json())
