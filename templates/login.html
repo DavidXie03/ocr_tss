@@ -28,7 +28,7 @@
 
                 const result = await response.json();
                 if (result.errorCode === 0) {
-                    location.href = '/upload';
+                    location.href = '/picture/handle';
                 } else {
                     alert(result.message || '登录失败，请检查您的用户名和密码！');
                 }

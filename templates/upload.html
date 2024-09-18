@@ -6,8 +6,9 @@
     <title>OCR_TSS</title>
 </head>
 <body>
-    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" />
+    <form id="uploadForm" action="/picture/handle" method="POST" enctype="multipart/form-data">
+        <input type="file" name="picture" id="pictureInput"/>
+        <input type="text" name="uid" />
         <input type="submit" value="提交"/>
     </form>
 
@@ -35,13 +36,14 @@
                 const result = await response.json();
 
                 // 显示上传的图片
-                const imageUrl = result.image_url;
+                var file = document.getElementById('pictureInput').files[0]
+                const imageUrl = URL.createObjectURL(file);
                 const uploadedImage = document.getElementById('uploadedImage');
                 uploadedImage.src = imageUrl;
                 uploadedImage.style.display = 'block';
 
                 // 播放生成的音频
-                const audioUrl = result.audio_url;
+                const audioUrl = result.data.audioUrl;
                 const audioPlayer = document.getElementById('audioPlayer');
                 audioPlayer.src = audioUrl;
                 audioPlayer.style.display = 'block';

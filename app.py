@@ -95,10 +95,12 @@ class Uploader:
                     self.user.connect().rollback()
                     return jsonify({"errorCode": 500, 'message': 'An error occurred'})
 
-        @self.app.route('/upload', methods=['GET', 'POST'])
+        @self.app.route('/picture/handle', methods=['GET', 'POST'])
         def upload_file():
             if request.method == 'POST':
-                f = request.files['file']
+                uid = request.form['uid']
+                print("/picture/handle uid = " + uid)
+                f = request.files['picture']
 
                 connection = self.user.connect()
                 with closing(connection) as connection:
@@ -135,7 +137,14 @@ class Uploader:
                             cursor.execute(sql2, (self.id, audio_url))
                             connection.commit()
 
-                            return jsonify({'image_url': image_url, 'audio_url': audio_url})
+                            response = {
+                                "errorCode": 0,
+                                "data": {
+                                    "audioUrl": audio_url
+                                }
+                            }
+
+                            return jsonify(response)
             else:
                 return render_template('upload.html')
 
