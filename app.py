@@ -156,21 +156,19 @@ class Uploader:
                     audio_urls = [item.replace(')', '') for item in audios]
             items = []
             num1 = len(image_urls)
-            num2 = len(audio_urls)
-            if num1 == num2:
-                for i in range(num1):
-                    imerge = {
-                        "imageUrl": image_urls[i],
-                        "audioUrl": audio_urls[i]
+            for i in range(num1):
+                imerge = {
+                    "imageUrl": image_urls[i],
+                    "audioUrl": audio_urls[i]
+                }
+                items.append(imerge)
+                response = {
+                    "errorCode": 0,
+                    "data": {
+                        "pictureNum": num1,
+                        "items": items
                     }
-                    items.append(imerge)
-                    response = {
-                        "errorCode": 0,
-                        "data": {
-                            "pictureNum": pictureNum,
-                            "items": items
-                        }
-                    }
+                }
                 # print(response)
                 return jsonify(response)
             # else:
