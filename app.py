@@ -162,15 +162,15 @@ class Uploader:
                     "audioUrl": audio_urls[i]
                 }
                 items.append(imerge)
-                response = {
-                    "errorCode": 0,
-                    "data": {
-                        "picturesNum": num1,
-                        "items": items
-                    }
-                }
                 # print(response)
-                return jsonify(response)
+            response = {
+                "errorCode": 0,
+                "data": {
+                    "picturesNum": num1,
+                    "items": items
+                }
+            }
+            return jsonify(response)
             # else:
                 # return jsonify({"errorCode": 409, 'message': 'Account already exists'})
 
