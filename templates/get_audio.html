@@ -44,7 +44,6 @@
                 document.getElementById('audioGallery').appendChild(audioPlayer);
             }
 
-            // 假设 audioUrls 是从后端获取的音频文件路径数组
             const audioUrls = {{ audio_urls | tojson }};
 
             audioUrls.forEach(audioUrl => {

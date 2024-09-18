@@ -47,24 +47,19 @@ class Uploader:
                 account = data['userName']
                 password = data['password']
 
-                try:
-                    self.id = self.user.login(account, password)
+                self.id = self.user.login(account, password)
 
-                    if self.id != 0:
-                        response = {
-                            "errorCode": 0,
-                            "data": {
-                                "uid": str(self.id),
-                                "userName": account,
-                            }
+                if self.id != 0:
+                    response = {
+                        "errorCode": 0,
+                        "data": {
+                            "uid": str(self.id),
+                            "userName": account,
                         }
-                        return jsonify(response)
-                    else:
-                        return jsonify({"errorCode": 401, "message": "Invalid credentials"})
-
-                except Exception as e:
-                    print(f"Error during login: {e}")
-                    return jsonify({"errorCode": 500, 'message': 'An error occurred'})
+                    }
+                    return jsonify(response)
+                else:
+                    return jsonify({"errorCode": 1, "message": "Invalid credentials"})
 
         @self.app.route('/user/register', methods=['GET', 'POST'])
         def register():
@@ -75,25 +70,19 @@ class Uploader:
                 account = data['userName']
                 password = data['password']
 
-                try:
-                    user_id = self.user.register(account, password)
+                user_id = self.user.register(account, password)
 
-                    if user_id != 0:
-                        response = {
-                            "errorCode": 0,
-                            "data": {
-                                "uid": str(user_id),
-                                "userName": account
-                            }
+                if user_id != 0:
+                    response = {
+                        "errorCode": 0,
+                        "data": {
+                            "uid": str(user_id),
+                            "userName": account
                         }
-                        return jsonify(response)
-                    else:
-                        return jsonify({"errorCode": 409, 'message': 'Account already exists'})
-
-                except Exception as e:
-                    print(f"Error during registration: {e}")
-                    self.user.connect().rollback()
-                    return jsonify({"errorCode": 500, 'message': 'An error occurred'})
+                    }
+                    return jsonify(response)
+                else:
+                    return jsonify({"errorCode": 2, 'message': 'Account already exists'})
 
         @self.app.route('/picture/handle', methods=['GET', 'POST'])
         def upload_file():
@@ -127,14 +116,8 @@ class Uploader:
                             audio_url = url_for('static', filename=f'audio/{audio_file_name}')
                             print(image_url)
 
-                            # 插入图像路径
-                            sql1 = "INSERT INTO images (user_id, imagepath) VALUES (%s, %s)"
-                            cursor.execute(sql1, (self.id, image_url))
-                            connection.commit()
-
-                            # 插入音频路径
-                            sql2 = "INSERT INTO audios (user_id, audiopath) VALUES (%s, %s)"
-                            cursor.execute(sql2, (self.id, audio_url))
+                            sql = "INSERT INTO history (user_id, imagepath, audiopath) VALUES (%s, %s, %s)"
+                            cursor.execute(sql, (self.id, image_url, audio_url))
                             connection.commit()
 
                             response = {
@@ -148,55 +131,24 @@ class Uploader:
             else:
                 return render_template('upload.html')
 
-        @self.app.route('/get_images')
-        def get_images():
-            connection = self.user.connect()
-            sql = "SELECT imagepath FROM images WHERE user_id = %s"
-            with closing(connection) as connection:
-                with closing(connection.cursor()) as cursor:
-                    cursor.execute(sql, self.id)
-                    images = cursor.fetchall()
-                    images = [','.join(item) for item in images]
-                    images = [item.replace(',', '') for item in images]
-                    images = [item.replace('(', '') for item in images]
-                    image_urls = [item.replace(')', '') for item in images]
-                    print(images)
-            return render_template('get_image.html', image_urls=image_urls)
-
-        @self.app.route('/get_audios')
-        def get_audios():
-            connection = self.user.connect()
-            sql = "SELECT audiopath FROM audios WHERE user_id = %s"
-            with closing(connection) as connection:
-                with closing(connection.cursor()) as cursor:
-                    cursor.execute(sql, self.id)
-                    audios = cursor.fetchall()
-                    audios = [','.join(item) for item in audios]
-                    audios = [item.replace(',', '') for item in audios]
-                    audios = [item.replace('(', '') for item in audios]
-                    audio_urls = [item.replace(')', '') for item in audios]
-                    print(audio_urls)
-            return render_template('get_audio.html', audio_urls=audio_urls)
-
-        @self.app.route('/audio/<path:filename>')
-        def get_audio(filename):
-            return send_from_directory('static/audio', filename)
-
-        @self.app.route('/picture/history')
+        @self.app.route('/picture/history', methods=['GET'])
         def get_history():
             connection = self.user.connect()
-            sql_1 = "SELECT imagepath FROM images WHERE user_id = %s"
-            sql_2 = "SELECT audiopath FROM audios WHERE user_id = %s"
+            sql_1 = "SELECT imagepath FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
+            sql_2 = "SELECT audiopath FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
+            uid = request.args.get('uid')
+            pictureNum = int(request.args.get('pictureNum'))
+            index = int(request.args.get('index'))
             with closing(connection) as connection:
                 with closing(connection.cursor()) as cursor:
-                    cursor.execute(sql_1, self.id)
+                    cursor.execute(sql_1, (uid, pictureNum, index))
                     images = cursor.fetchall()
                     images = [','.join(item) for item in images]
                     images = [item.replace(',', '') for item in images]
                     images = [item.replace('(', '') for item in images]
                     image_urls = [item.replace(')', '') for item in images]
 
-                    cursor.execute(sql_2, self.id)
+                    cursor.execute(sql_2, (uid, pictureNum, index))
                     audios = cursor.fetchall()
                     audios = [','.join(item) for item in audios]
                     audios = [item.replace(',', '') for item in audios]
@@ -211,10 +163,18 @@ class Uploader:
                         "imageUrl": image_urls[i],
                         "audioUrl": audio_urls[i]
                     }
-                    items[i] = imerge
-                print(items)
-            else:
-                print("length error")
+                    items.append(imerge)
+                    response = {
+                        "errorCode": 0,
+                        "data": {
+                            "pictureNum": pictureNum,
+                            "items": items
+                        }
+                    }
+                # print(response)
+                return jsonify(response)
+            # else:
+                # return jsonify({"errorCode": 409, 'message': 'Account already exists'})
 
     def run(self, debug=True):
         if not os.path.exists(self.UPLOAD_FOLDER):
