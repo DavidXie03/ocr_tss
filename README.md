@@ -9,11 +9,11 @@
 
 ### 环境配置
 ```shell
-pip install torch torchvision flask easyocr pyttsx3 pymysql
+pip install torch torchvision flask easyocr pyttsx3 pymysql pillow
 ```
 
 ### 数据库user_message创建
-```shell
+```sql
 CREATE TABLE user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     account VARCHAR(50) NOT NULL UNIQUE,
@@ -29,4 +29,5 @@ CREATE TABLE history (
 ```
 
 ### 运行方式
-网页端：运行`main.py`后访问 http://127.0.0.1:5000/index ，上传文件后即可得到语音播报结果（待进一步完善）。"# software" 
+网页端：运行`app.py`后访问 http://127.0.0.1:5000/index ，登录账号后上传文件后即可得到语音播报结果（待进一步完善）。
+安卓端：结合客户端app使用。

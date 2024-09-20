@@ -1,22 +1,20 @@
-from flask import Flask, render_template, request, url_for, jsonify, send_from_directory, redirect
-# from flask_restful import Api
+from flask import Flask, render_template, request, url_for, jsonify, redirect
 import pyttsx3
 import easyocr
 import uuid
 import os
 import pymysql
 from contextlib import closing
-
-from shapely import length
-
+from photo_preprocess import preprocess
 import database
 
 
 class Uploader:
-    def __init__(self, upload_folder='static/uploads', audio_folder='static/audio'):
+    def __init__(self, url='https://70046236dd.imdo.co', upload_folder='static/uploads', audio_folder='static/audio'):
         self.app = Flask(__name__)
         self.reader = easyocr.Reader(['ch_sim', 'en'], True)
         self.engine = pyttsx3.init()
+        self.url = url
         self.UPLOAD_FOLDER = upload_folder
         self.AUDIO_FOLDER = audio_folder
         # self.file_received = False
@@ -88,7 +86,6 @@ class Uploader:
         def upload_file():
             if request.method == 'POST':
                 uid = request.form['uid']
-                print("/picture/handle uid = " + uid)
                 f = request.files['picture']
 
                 connection = self.user.connect()
@@ -97,9 +94,10 @@ class Uploader:
                         if self.id != 0:
                             # 保存上传的图片
                             unique_id = str(uuid.uuid4())
-                            pic_file_name = unique_id + ".png"
+                            pic_file_name = unique_id + ".jpg"
                             pic_file_path = os.path.join(self.UPLOAD_FOLDER, pic_file_name)
                             f.save(pic_file_path)
+                            preprocess(pic_file_path, pic_file_path)
 
                             # 识别图片中的文字
                             ocr_result = self.reader.readtext(pic_file_path, detail=0, paragraph=True)
@@ -123,7 +121,8 @@ class Uploader:
                             response = {
                                 "errorCode": 0,
                                 "data": {
-                                    "audioUrl": audio_url
+                                    "imageUrl": self.url + image_url,
+                                    "audioUrl": self.url + audio_url
                                 }
                             }
 
@@ -158,8 +157,8 @@ class Uploader:
             num1 = len(image_urls)
             for i in range(num1):
                 imerge = {
-                    "imageUrl": image_urls[i],
-                    "audioUrl": audio_urls[i]
+                    "imageUrl": self.url + image_urls[i],
+                    "audioUrl": self.url + audio_urls[i]
                 }
                 items.append(imerge)
                 # print(response)
