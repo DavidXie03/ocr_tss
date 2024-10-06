@@ -20,7 +20,6 @@ class Uploader:
         # self.file_received = False
         self._setup_routes()
         self.user = database.User()
-        self.id = 0
         self.offset = 0
 
     def _setup_routes(self):
@@ -45,13 +44,13 @@ class Uploader:
                 account = data['userName']
                 password = data['password']
 
-                self.id = self.user.login(account, password)
+                uid = self.user.login(account, password)
 
-                if self.id != 0:
+                if uid != 0:
                     response = {
                         "errorCode": 0,
                         "data": {
-                            "uid": str(self.id),
+                            "uid": str(uid),
                             "userName": account,
                         }
                     }
@@ -91,7 +90,7 @@ class Uploader:
                 connection = self.user.connect()
                 with closing(connection) as connection:
                     with closing(connection.cursor()) as cursor:
-                        if self.id != 0:
+                        if uid != 0:
                             # 保存上传的图片
                             unique_id = str(uuid.uuid4())
                             pic_file_name = unique_id + ".jpg"
@@ -115,7 +114,7 @@ class Uploader:
                             print(image_url)
 
                             sql = "INSERT INTO history (user_id, imagepath, audiopath) VALUES (%s, %s, %s)"
-                            cursor.execute(sql, (self.id, image_url, audio_url))
+                            cursor.execute(sql, (uid, image_url, audio_url))
                             connection.commit()
 
                             response = {
