@@ -113,15 +113,16 @@ class Uploader:
                             audio_url = url_for('static', filename=f'audio/{audio_file_name}')
                             print(image_url)
 
-                            sql = "INSERT INTO history (user_id, imagepath, audiopath) VALUES (%s, %s, %s)"
-                            cursor.execute(sql, (uid, image_url, audio_url))
+                            sql = "INSERT INTO history (user_id, imagepath, audiopath, text) VALUES (%s, %s, %s, %s)"
+                            cursor.execute(sql, (uid, image_url, audio_url, ocr_result))
                             connection.commit()
 
                             response = {
                                 "errorCode": 0,
                                 "data": {
                                     "imageUrl": self.url + image_url,
-                                    "audioUrl": self.url + audio_url
+                                    "audioUrl": self.url + audio_url,
+                                    "text": ocr_result
                                 }
                             }
 
@@ -134,6 +135,7 @@ class Uploader:
             connection = self.user.connect()
             sql_1 = "SELECT imagepath FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
             sql_2 = "SELECT audiopath FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
+            sql_3 = "SELECT text FROM history WHERE user_id = %s LIMIT %s OFFSET %s"
             uid = request.args.get('uid')
             picturesNum = int(request.args.get('picturesNum'))
             index = int(request.args.get('index'))
@@ -152,12 +154,20 @@ class Uploader:
                     audios = [item.replace(',', '') for item in audios]
                     audios = [item.replace('(', '') for item in audios]
                     audio_urls = [item.replace(')', '') for item in audios]
+
+                    cursor.execute(sql_3, (uid, picturesNum, index))
+                    texts = cursor.fetchall()
+                    texts = [','.join(item) for item in texts]
+                    texts = [item.replace(',', '') for item in texts]
+                    texts = [item.replace('(', '') for item in texts]
+                    texts = [item.replace(')', '') for item in texts]
             items = []
             num1 = len(image_urls)
             for i in range(num1):
                 imerge = {
                     "imageUrl": self.url + image_urls[i],
-                    "audioUrl": self.url + audio_urls[i]
+                    "audioUrl": self.url + audio_urls[i],
+                    "text": texts[i]
                 }
                 items.append(imerge)
                 # print(response)

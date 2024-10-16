@@ -24,10 +24,14 @@ CREATE TABLE history (
 	user_id INT NOT NULL,
     imagepath VARCHAR(255) NOT NULL,
     audiopath VARCHAR(255) NOT NULL,
+    text VARCHAR(1023) NOT NULL,
     upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
+### 接口文档
+* 接口文档：https://www.showdoc.com.cn/ocrtss2024
+* 访问密码：ocrtss@
+
 ### 运行方式
-网页端：运行`app.py`后访问 http://127.0.0.1:5000/index ，登录账号后上传文件后即可得到语音播报结果（待进一步完善）。
-安卓端：结合客户端app使用。
+运行`app.py`，并结合客户端app使用。
