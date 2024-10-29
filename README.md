@@ -53,3 +53,4 @@ CREATE TABLE history (
 ## 🌞 相关链接
 * [接口文档](https://www.showdoc.com.cn/ocrtss2024) （访问密码：ocrtss@）
 * [客户端仓库](https://github.com/dydjbl/PhotosAudioApp)
+* [EasyOCR](https://github.com/JaidedAI/EasyOCR)、[pyttsx3](https://github.com/nateshmbhat/pyttsx3)
