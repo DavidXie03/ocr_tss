@@ -4,7 +4,7 @@ import app
 
 
 class User:
-    def __init__(self, host='127.0.0.1', port=3306, user='root', passwd='20030404ab', db='user_message', charset='utf8'):
+    def __init__(self, host='127.0.0.1', port=3306, user='root', passwd='123456', db='user_message', charset='utf8'):
         self.host = host
         self.port = port
         self.user = user
