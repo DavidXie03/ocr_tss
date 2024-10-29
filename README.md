@@ -1,6 +1,8 @@
 <div align="center">
 <h1>OCR_TSS</h1>
 <h3>摄像头图像文字识别及语音播报系统</h3>
+
+作者: [David Xie](https://github.com/DavidXie03), [Wei](https://github.com/1094119379), [Zhu](https://github.com/dydjbl)
 </div>
 
 ## 📜 简介
@@ -9,6 +11,10 @@
 该系统在辅助育人和视障人士获取图像信息、提升信息获取的便捷性以及在智能家居和智能监控等领域具有广泛的应用前景。
 
 主要研究任务包括:开发高精度的图像文字识别算法、实现高效的语音合成技术，以及构建一体化的系统架构以实现实时文字识别与语音播报功能。
+
+## 🎬 演示Demo
+
+https://github.com/DavidXie03/ocr_tss/blob/master/demo.mp4
 
 ## 🎮 如何运行
 
