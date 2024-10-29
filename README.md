@@ -14,7 +14,6 @@
 
 ## 🎬 演示Demo
 
-https://github.com/DavidXie03/ocr_tss/blob/master/demo.mp4
 
 ## 🎮 如何运行
 
